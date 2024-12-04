@@ -3,6 +3,6 @@
 
 frappe.ui.form.on('Folder Set', {
   select_nc_folder: function(frm) {
-    new frappe.ui.pibiDAV;
+    new frappe.ui.pibiDocs;
   }  
 });
