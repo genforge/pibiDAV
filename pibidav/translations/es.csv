@@ -66,6 +66,7 @@ Communication Date,Fecha Comunicación
 Company Fax,Fax Empresa
 Company Phone,Teléfono Empresa
 Company Website,Web Empresa
+"Complete all data Abbreviation, Folder Name and Folder Set","Completa la abreviatura, el nombre de carpeta y la plantilla"
 Complete by,Completar el
 Configure Account Settings,Configura los Ajustes de Finanzas
 Configure Buying Settings.,Configurar los Ajustes de Compras.
@@ -100,6 +101,7 @@ Create Lead,Crear Iniciativa
 Create Leave Allocation,Crear Solicitud de Ausencia
 Create Leave Application,Crear Peticion de Ausencia
 Create Leave Type,Crear Tipo de Ausencia
+Create NC Folder,Crear Carpeta NC
 Create NC Group,Crear Grupo NC
 Create Opportunity,Crear Oportunidad
 Create Payroll Period,Crear Período de Nómina
@@ -132,6 +134,7 @@ Delivery Note,Albaran
 Delivery Purpose,Propósito de Envío
 Digits to substitute with abbreviation,Digitos Plantilla a sustituir con Abreviatura
 Disable NC,Desactiva NC
+Disable NextCloud,Desactiva NextCloud
 Discipline,Especialidad
 Dispatch Address Name,Dirección de Entrega
 Distribution,Distribución
@@ -146,6 +149,7 @@ Document Number,Numero Documento
 Document Responsible,Responsable del Documento
 Document Submission,Transmisión de Documento
 Documentation,Documentación
+Documents,Documentos
 Drag and drop files here or upload from,Arrastra y suelta los archivos aquí o súbelos desde
 Due to MicroTemplating never use ' simple quotes in the html code.,Debido al uso de MicroTemplates nunca use comillas simples en el código html
 Edit Filters,Editar Filtros
@@ -159,6 +163,9 @@ Employee Records to be created by,Los registros de Empleados se crean por
 Employees Working on a Holiday,Empleados trabajando en festivo
 Enable NC,Activa NC
 Enable Website Tracking,Activar Seguimiento Web
+Enable NextCloud,Activa NextCloud
+Enter Abbreviation,Introduce la Abreviatura
+Enter Folder Name,Introduce el Nombre de Carpeta
 Error Creating NC Group,Error creando Grupo en NC
 Event created successfully.,Evento creado satisfactoriamente.
 Event removed successfully.,Evento eliminado correctamente.
@@ -229,9 +236,9 @@ Let's Set Up the Stock Module.,Configuremos el Módulo de Productos
 Let's Set Up Your Accounts and Taxes.,Configuremos Cuentas e Impuestos
 Let's Set Up Your CRM.,Configurar el CRM
 Let's Set Up Your Website.,Configuremos su Sitio Web
-Lets create a Tax Template for Sales ,Crear una Plantilla de Impuestos en Ventas
 Let’s create a stock opening entry,Creemos una entrada de apertura de stock
 Let’s create your first  warehouse ,Creemos tu primer almacen
+Lets create a Tax Template for Sales ,Crear una Plantilla de Impuestos en Ventas
 Library,Biblioteca
 LifeCycle Status,Ciclo de Vida
 Like,Contiene
@@ -355,7 +362,9 @@ Secret,Clave
 Seed,Germen
 Select NC Folder,Elige Carpeta NC
 Select NextCloud Destination Folder,Elige la carpeta de destino en NextCloud
+Select NextCloud Folder,Elige la carpeta de destino en NextCloud
 Send Email,Enviar Correo
+Select Folder Set,Elige la Plantilla de Carpeta
 Send Invitation,Enviar Invitación
 Send Leave Notification,Enviar Notificación de Ausente
 Sensor Log,Registro de Sensores
@@ -371,6 +380,8 @@ Setup a Warehouse,Configurar un Almacenamiento
 Share Link,Enlace Compartido
 Share URL,Comparte URL
 Sharing Option,Opción Compartir
+Sharing Password,Clave Compartición
+Sharing password must be greater than 10 chars long and not usual,La clave de compartición debe ser mayor de 10 caracteres y no comun
 Shipping Address Name,Dirección de Despacho
 Shortener,Recorte
 Show Form Tour,Mostrar un Tour en Formulario
@@ -410,6 +421,8 @@ To ReIssue,A reeditar
 To Review,A Revisar
 Toggle Full Width,Alterna Vista Completa
 Toggle Theme,Ajustar Aspecto
+Tools,Herramientas
+Transaction Feed,Alimentar Transacción
 Transcription Language,Idioma Destino
 Tree,Árbol
 Unit of Measure (UOM),Unidad de Medida (UdM)
@@ -418,6 +431,7 @@ Update Settings,Actualizar Ajustes
 Update Stock Opening Balance,Actualizar el Balance de Apertura de Estocaje
 Updated Date,Fecha actualizada Proveedor
 Updated/Created Event in Calendar,Actualizado/Creado un Evento de Calendario 
+Upload to NC,Subir a NC
 Upload to NextCloud,Subir a NextCloud
 Uploaded To NC,Subido a NC
 Uploaded To NextCloud,Subido a NextCloud
@@ -445,8 +459,3 @@ Workship Schedule,Horario Area
 You can only reply to one message at a time,Sólo puedes responder a un mensaje de cada vez
 You have selected a file and not a folder,Se ha seleccionado un archivo y no una carpeta
 You must select one message,Debes elegir un mensaje
-Transaction Feed,Alimentar Transacción
-Upload to NC,Subir a NC
-Select NextCloud Folder,Elige la carpeta de destino en NextCloud
-Documents,Documentos
-Tools,Herramientas

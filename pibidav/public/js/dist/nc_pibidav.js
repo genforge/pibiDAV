@@ -12,7 +12,7 @@ frappe.ui.form.on(cur_frm.doctype, {
         let nc_enable = r.message.nc_enable;
         //console.log(r);
         if (nc_enable !== 1) { 
-          frm.add_custom_button(__("Enable NC"), function() {
+          const ncButton = frm.add_custom_button( frappe.utils.icon('nextcloud', 'md'), function() {
             frappe.db.get_value("PibiDAV Addon",
               {"ref_doctype": frm.doc.doctype, "ref_docname": frm.doc.name},
               ["name"]
@@ -35,6 +35,8 @@ frappe.ui.form.on(cur_frm.doctype, {
             });
             window.setTimeout(function(){location.reload()},300)
           }).addClass("btn btn-primary");
+          ncButton.attr('title', __('Enable NextCloud'));
+          
         } else {
           // Button to upload to NC
           frm.add_custom_button(__("Upload to NC"), function() {
@@ -83,7 +85,7 @@ frappe.ui.form.on(cur_frm.doctype, {
             });
           },__("NC Commands"));
           // Button to disable NC
-          frm.add_custom_button(__("Disable NC"), function() {
+          const ncButton = frm.add_custom_button( frappe.utils.icon('nextcloud', 'md'), function() {
             frappe.db.get_value("PibiDAV Addon",
               {"ref_doctype": frm.doc.doctype, "ref_docname": frm.doc.name},
               ["name"]
@@ -106,6 +108,7 @@ frappe.ui.form.on(cur_frm.doctype, {
             });
             window.setTimeout(function(){location.reload()},300)
           }).addClass("btn btn-danger");
+          ncButton.attr('title', __('Disable NextCloud'));       
         }  
       });
     }
@@ -138,26 +141,44 @@ function CreateFolder(frm) {
   }).then(function(r) {
     let doCreate = r.message;
     //console.log(doCreate);
+    let default_folder_name = null;
+    let default_abbreviation = null;
+    let default_folder_set = null;
+    
+    if (frm.doc.doctype === 'Customer') {
+      default_folder_name = frm.doc.customer_name;
+      default_abbreviation = frm.doc.pb_abbreviation;
+      default_folder_set = '(CLI) Plantilla Clientes';
+    }
+    if (frm.doc.doctype === 'Supplier') {
+      default_folder_name = frm.doc.supplier_name;
+      default_abbreviation = frm.doc.pb_abbreviation;
+      default_folder_set = '(PRO) Plantilla Proveedores';
+    }
+    
     if (doCreate) {
       let d = new frappe.ui.Dialog({
-        title: 'Create NC Folder',
+        title: __('Create NC Folder'),
         fields: [
           {
             label: (__('Enter Abbreviation')),
             fieldname: 'abbreviation',
-            fieldtype: 'Data'
+            fieldtype: 'Data',
+            default: default_abbreviation
           },
           {
             label: (__('Enter Folder Name')),
             fieldname: 'strmain',
-            fieldtype: 'Data'
+            fieldtype: 'Data',
+            default: default_folder_name
           },
           {
             label: (__('Select Folder Set')),
             fieldname: 'folder_set',
             fieldtype: 'Link',
             options: 'Folder Set',
-            filters: {'parent_folder_set': ''}
+            filters: {'parent_folder_set': ''},
+            default: default_folder_set
           },
           {
             label: (__('Sharing Option')),
