@@ -618,3 +618,23 @@ def check_addon(dt, dn):
     pibidav = frappe.get_doc("PibiDAV Addon", "pbc_{}".format(dn))
     
   return pibidav
+
+@frappe.whitelist()
+def fetch_nc_folder_internal_link_from_addon(addon_name):
+    pibidav = frappe.get_doc("PibiDAV Addon", addon_name)
+    if not pibidav.nc_folder:
+        frappe.throw(_("No NC Folder defined in the Addon."))
+
+    session = make_nc_session()  # Authenticate as superuser
+    fileinfo = session.file_info(pibidav.nc_folder, properties=['{http://owncloud.org/ns}fileid'])
+    if fileinfo:
+        fileid = fileinfo.attributes['{http://owncloud.org/ns}fileid']
+        nc_url = frappe.get_value("NextCloud Settings", "NextCloud Settings", "nc_backup_url")
+        if nc_url[-1] != '/':
+            nc_url += '/'
+        intlink = f'<a href="{nc_url}f/{fileid}" target="_blank">{nc_url}f/{fileid}</a>'
+        pibidav.nc_folder_internal_link = intlink
+        pibidav.save()
+        return intlink
+    else:
+        frappe.throw(_("Failed to fetch folder metadata from NextCloud."))

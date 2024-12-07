@@ -47,14 +47,14 @@ nc_list = [
   "Supplier",
   "Project",
   "Sales Invoice",
+  "Sales Order",
   "Purchase Invoice",
   "Quotation",
   "Purchase Order",
   "Task",
   "Timesheet",
   "Item",
-  "Employee",
-  "GM Work Order"
+  "Employee"
 ]
 
 doctype_js = {}

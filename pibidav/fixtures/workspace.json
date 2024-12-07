@@ -1,7 +1,7 @@
 [
  {
   "charts": [],
-  "content": "[{\"id\":\"w6ozBdED5x\",\"type\":\"header\",\"data\":{\"text\":\"<a href=\\\"/app/home\\\">Inicio</a><span class=\\\"h4\\\"><span class=\\\"h5\\\"> &gt; pibiTools</span><br></span>\",\"col\":12}}]",
+  "content": "[{\"id\":\"w6ozBdED5x\",\"type\":\"header\",\"data\":{\"text\":\"<a href=\\\"/app/home\\\">Inicio</a><span class=\\\"h4\\\"><span class=\\\"h5\\\"> &gt; pibiTools</span><br></span>\",\"col\":12}},{\"id\":\"Xyxm-ti2im\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"AI Home\",\"col\":12}}]",
   "custom_blocks": [],
   "docstatus": 0,
   "doctype": "Workspace",
@@ -12,7 +12,7 @@
   "is_hidden": 0,
   "label": "pibiTools",
   "links": [],
-  "modified": "2024-12-06 18:03:53.533587",
+  "modified": "2024-12-07 10:10:19.730958",
   "module": "Pibidav",
   "name": "pibiTools",
   "number_cards": [],

@@ -1,7 +1,7 @@
 {
  "charts": [],
  "content": "[{\"id\":\"azQJesz1jX\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"></span><a href=\\\"https://aiduct-pro.espib.co/app/home\\\">Inicio</a> &gt; <a href=\\\"/app/pibitools\\\">pibiTools</a> &gt; pibiDAV<br>\",\"col\":12}},{\"id\":\"XQTScKtokJ\",\"type\":\"card\",\"data\":{\"card_name\":\"Documents\",\"col\":4}},{\"id\":\"OIx7Apgo_M\",\"type\":\"card\",\"data\":{\"card_name\":\"Configuraci\u00f3n\",\"col\":4}}]",
- "creation": "2024-12-04 08:43:23.628760",
+ "creation": "2024-12-06 23:17:35.907677",
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
@@ -102,7 +102,7 @@
    "type": "Link"
   }
  ],
- "modified": "2024-12-06 20:06:36.470352",
+ "modified": "2024-12-06 23:18:00.867514",
  "modified_by": "Administrator",
  "module": "Pibidav",
  "name": "pibiDAV",
@@ -122,7 +122,7 @@
    "role": "NextCloud User"
   }
  ],
- "sequence_id": 4.0,
+ "sequence_id": 11.0,
  "shortcuts": [],
  "title": "pibiDAV"
 }
