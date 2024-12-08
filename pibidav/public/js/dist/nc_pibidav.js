@@ -52,15 +52,36 @@ function handleEnableNextCloud(frm) {
     frappe.db.get_value(
         "PibiDAV Addon",
         { ref_doctype: frm.doc.doctype, ref_docname: frm.doc.name },
-        ["name"]
+        ["name", "nc_folder", "nc_enable"]
     ).then(r => {
         const addon = r.message || {};
-        if (frm.doc.nc_parent_folder) {
-            createOrUpdateAddonWithFolder(frm, addon);
+
+        if (!addon.name) {
+            // Addon does not exist, create it first
+            createAddon(frm, (newAddon) => {
+                processNextCloudEnable(frm, newAddon);
+            });
         } else {
-            createOrUpdateAddonWithoutFolder(frm, addon);
+            // Addon exists, proceed to process enabling
+            processNextCloudEnable(frm, addon);
         }
     });
+}
+// Process enabling NextCloud
+function processNextCloudEnable(frm, addon) {
+    const nc_parent_folder = frm.doc.nc_parent_folder;
+
+    if (nc_parent_folder) {
+        frappe.db.set_value("PibiDAV Addon", addon.name, {
+            nc_enable: 1,
+            nc_folder_internal_link: nc_parent_folder
+        }).then(() => {
+            fetchAndSetFolderPath(nc_parent_folder, addon.name, frm);
+        });
+    } else {
+        frappe.db.set_value("PibiDAV Addon", addon.name, { nc_enable: 1 })
+            .then(() => location.reload());
+    }
 }
 // Handle uploading to NextCloud
 function handleUploadToNextCloud(frm) {
@@ -150,14 +171,11 @@ function fetchAndSetFolderPath(folderLink, addonName) {
 }
 // Open NextCloud Browser
 function openNextCloudBrowser(addon) {
-    if (!addon.nc_folder) {
-        frappe.msgprint(__('No NextCloud folder is configured.'));
-        return;
-    }
+    const targetFolder = addon.nc_folder || '/'; // Start at root if no folder is configured
 
     new frappe.ui.pibiDocs({
-        targetFolder: addon.nc_folder,
-        root_folder: addon.nc_folder
+        targetFolder: targetFolder,
+        root_folder: targetFolder
     });
 }
 // Create Addon
