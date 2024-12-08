@@ -48,7 +48,16 @@ frappe.ui.form.on(cur_frm.doctype, {
               var addon = r.message;
               //console.log(addon);
               if (addon.name == "pbc_" + frm.doc.name) {
-                new frappe.ui.pibiDocs;      
+                 if (addon.nc_folder) {
+                   // Create new browser instance with target folder
+                    new frappe.ui.pibiDocs({
+                      targetFolder: addon.nc_folder,
+                      root_folder: addon.nc_folder
+                    });
+                  } else {
+                    // If nc_folder is not set, open browser without target
+                    new frappe.ui.pibiDocs();
+                  }     
               } else {
                 frappe.db.insert({
                   "doctype": "PibiDAV Addon",
