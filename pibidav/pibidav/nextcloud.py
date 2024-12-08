@@ -1847,6 +1847,51 @@ class Client(object):
 
         raise HTTPResponseError(res)
 
+    def get_path_from_fileid(self, fileid):
+        """
+        Retrieves the full path of a file or directory based on its fileid.
+
+        :param fileid: The fileid for the desired file or directory
+        :return: Full path of the file or directory
+        :raises: Exception if the path cannot be resolved
+        """
+        try:
+            # Construct the WebDAV endpoint URL for the fileid
+            url = f"{self.url}apps/files/?fileid={fileid}"
+
+            # Make a GET request to retrieve the location header with the resolved path
+            res = self._session.get(url, allow_redirects=False)
+
+            # Log the entire redirect response for debugging
+            if res.status_code in [301, 302, 303]:  # Redirect statuses
+                location = res.headers.get("Location")
+                if not location:
+                    raise Exception("Location header missing in response.")
+
+                # Log the redirected URL
+                if self._debug:
+                    print(f"Redirected URL: {location}")
+
+                # Extract and decode the path from the URL
+                parsed_location = parse.urlparse(location)
+                resolved_path = parse.unquote(parsed_location.path)
+
+                # Log query parameters (e.g., dir=) for further inspection
+                query_params = parse.parse_qs(parsed_location.query)
+                if self._debug:
+                    print(f"Query Parameters: {query_params}")
+
+                # Look for the `dir` parameter in the query parameters
+                if "dir" in query_params:
+                    return query_params["dir"][0]  # Return the first value of the 'dir' parameter
+
+                # If `dir` is not found, fallback to the path
+                return self._strip_dav_path(resolved_path)
+            else:
+                raise Exception(f"Failed to resolve fileid {fileid}: HTTP {res.status_code}")
+        except Exception as e:
+            raise Exception(f"Error retrieving path for fileid {fileid}: {e}")
+
     @staticmethod
     def _normalize_path(path):
         """Makes sure the path starts with a "/"

@@ -6,7 +6,7 @@ import frappe
 from frappe import _, msgprint, throw, enqueue
 from frappe.utils import cint, cstr
 
-import json, time, requests, sys, hashlib
+import json, time, requests, sys, hashlib, re
 from datetime import date, datetime, timedelta
 
 import pibidav.pibidav.nextcloud as nextcloud
@@ -638,3 +638,40 @@ def fetch_nc_folder_internal_link_from_addon(addon_name):
         return intlink
     else:
         frappe.throw(_("Failed to fetch folder metadata from NextCloud."))
+
+@frappe.whitelist()
+def get_folder_path_from_link(fileid):
+    """
+    Retrieves the full folder path using the fileid.
+    
+    :param fileid: File ID from the NextCloud folder link
+    :return: Full path of the folder or an error message
+    """
+    if not fileid:
+        frappe.log_error("No fileid provided to get_folder_path_from_link.")
+        return "Error: fileid is empty."
+
+    try:
+        # Create a NextCloud session
+        nc_session = make_nc_session()
+        if not nc_session or nc_session == "Failed":
+            frappe.log_error("Failed to establish session with NextCloud.")
+            return "Error: Unable to establish session with NextCloud."
+
+        # Log the fileid for debugging
+        frappe.logger().info(f"Fetching directory for fileid: {fileid}")
+
+        # Use the NextCloud session to fetch the folder path
+        folder_path = nc_session.get_path_from_fileid(fileid)
+        #nc_session.logout()
+
+        if folder_path:
+            frappe.logger().info(f"Retrieved folder path for fileid {fileid}: {folder_path}")
+            return folder_path
+        else:
+            frappe.log_error(f"Folder path not found for fileid: {fileid}")
+            return "Folder path not found."
+    except Exception as e:
+        # Log the error with a full traceback for debugging
+        frappe.log_error(message=f"Error retrieving folder path for fileid {fileid}: {e}", title="NextCloud Path Retrieval Error")
+        return f"Error retrieving folder path: {e}"
