@@ -1,5 +1,22 @@
 <template>
   <div class="file-browser">
+    <div class="border-b border-gray-200 px-3 py-2 flex justify-between items-center">
+      <div class="text-sm text-gray-600">{{ selected_node.value || '/' }}</div>
+      <div class="flex gap-2">
+        <button v-if="selected_node && !selected_node.is_leaf" 
+                class="btn btn-sm btn-primary mr-1" 
+                @click="showCreateFolderDialog"
+                title="Crea Carpeta | Create Folder">
+          <span v-html="folderPlusIcon"></span>
+        </button>
+        <button v-if="selected_node && selected_node.value"
+                class="btn btn-sm btn-primary ml-1" 
+                @click="openInNextCloud"
+                title="Abrir en NextCloud | Open in NextCloud">
+          <span v-html="externalLinkIcon"></span>
+        </button>
+      </div>
+    </div>
     <div class="nc-browser-list">
       <TreeNode
         class="tree with-skeleton"
@@ -47,20 +64,63 @@ export default {
       page_length: 500
     };
   },
+  computed: {
+    folderPlusIcon() {
+      return frappe.utils.icon('folder-plus', 'sm');
+    },
+    externalLinkIcon() {
+      return frappe.utils.icon('external-link', 'sm');
+    }
+  },
   mounted() {
     this.initializeFolder();
   },
   methods: {
+    select_folder() {
+      let selected_file = this.selected_node;
+      return this.upload_to_folder({
+        is_folder: !selected_file.is_leaf,
+        file_name: selected_file.filename,
+        fileid: selected_file.file_url,
+        path: selected_file.value
+      });
+    },
+    upload_to_folder(file) {
+      return file;
+    },
+    async openInNextCloud() {
+      if (!this.selected_node?.value) return;
+      
+      try {
+        const nc_url = await frappe.db.get_single_value('NextCloud Settings', 'nc_backup_url');
+        if (!nc_url) {
+          frappe.throw(__('NextCloud URL not configured'));
+          return;
+        }
+
+        const baseUrl = nc_url.endsWith('/') ? nc_url : nc_url + '/';
+        let viewUrl;
+
+        if (this.selected_node.is_leaf) {
+          // For files, open directly using the fileId
+          viewUrl = baseUrl + 'apps/files/?fileid=' + this.selected_node.file_url;
+        } else {
+          // For folders, open the directory view
+          viewUrl = baseUrl + 'apps/files/?dir=' + encodeURIComponent(this.selected_node.value);
+        }
+        
+        window.open(viewUrl, '_blank');
+      } catch (error) {
+        frappe.throw(__('Error opening NextCloud: ') + error.message);
+      }
+    },
     getLabelFromPath(path) {
-      // Get the last part of the path for the label
       const parts = path.split('/');
       return parts[parts.length - 1] || '/';
     },
     async initializeFolder() {
-      // First toggle the root node
       await this.toggle_node(this.node);
       
-      // If initial_folder is different from root_folder, navigate to it
       if (this.initial_folder !== this.root_folder) {
         await this.navigateToFolder(this.initial_folder);
       }
@@ -68,7 +128,6 @@ export default {
     async navigateToFolder(targetPath) {
       if (!targetPath || targetPath === this.root_folder) return;
       
-      // Split the path into segments, removing empty strings
       const pathSegments = targetPath
         .substring(this.root_folder.length)
         .split('/')
@@ -76,26 +135,20 @@ export default {
       
       let currentNode = this.node;
       
-      // Navigate through each segment
       for (const segment of pathSegments) {
-        // Toggle current node if not already open
         if (!currentNode.open) {
           await this.toggle_node(currentNode);
         }
         
-        // Find the next node
         const nextNode = currentNode.children.find(
           child => child.filename === segment || child.label === segment
         );
         
         if (!nextNode) break;
         currentNode = nextNode;
-        
-        // Toggle the found node
         await this.toggle_node(currentNode);
       }
       
-      // Select the final node
       this.select_node(currentNode);
     },
     toggle_node(node) {
@@ -170,17 +223,51 @@ export default {
         fetching: false
       };
     },
-    select_folder() {
-      let selected_file = this.selected_node;
-      return this.upload_to_folder({
-        is_folder: !selected_file.is_leaf,
-        file_name: selected_file.filename,
-        fileid: selected_file.file_url,
-        path: selected_file.value
+    async showCreateFolderDialog() {
+      if (!this.selected_node || this.selected_node.is_leaf) return;
+
+      const d = new frappe.ui.Dialog({
+        title: __('Create New Folder'),
+        fields: [
+          {
+            label: __('Folder Name'),
+            fieldname: 'folder_name',
+            fieldtype: 'Data',
+            reqd: 1
+          }
+        ],
+        primary_action_label: __('Create'),
+        primary_action: async (values) => {
+          try {
+            await this.createFolder(this.selected_node.value, values.folder_name);
+            d.hide();
+          } catch (error) {
+            frappe.throw(__(error.message));
+          }
+        }
       });
+      d.show();
     },
-    upload_to_folder(file) {
-      return file;
+    async createFolder(parentPath, folderName) {
+      const response = await frappe.call({
+        method: 'pibidav.pibidav.custom.create_nc_subfolder',
+        args: {
+          parent_folder: parentPath,
+          folder_name: folderName
+        }
+      });
+
+      if (response.exc) {
+        throw new Error('Failed to create folder');
+      }
+
+      this.selected_node.fetched = false;
+      await this.toggle_node(this.selected_node);
+
+      frappe.show_alert({
+        message: __('Folder created successfully'),
+        indicator: 'green'
+      });
     }
   }
 };

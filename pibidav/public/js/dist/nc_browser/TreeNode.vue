@@ -1,14 +1,18 @@
 <template>
   <div class="tree-node" :class="{ opened: node.open }">
-    <span
-      class="tree-link"
-      @click="$emit('node-click', node)"
-      :class="{ active: node.value === selected_node.value }"
-      :disabled="node.fetching"
-    >
-      <div v-html="icon"></div>
-      <a class="tree-label">{{ node.label }}</a>
-    </span>
+    <div class="tree-node-content">
+      <span
+        class="tree-link"
+        @click="handleNodeClick"
+        :class="{ active: node.value === selected_node.value }"
+        :disabled="node.fetching"
+      >
+        <div class="flex items-center">
+          <div v-html="icon"></div>
+          <a class="tree-label">{{ node.label }}</a>
+        </div>
+      </span>
+    </div>
     <ul class="tree-children" v-show="node.open">
       <TreeNode
         v-for="n in node.children"
@@ -29,13 +33,11 @@
     </ul>
   </div>
 </template>
+
 <script>
 export default {
   name: "TreeNode",
   props: ["node", "selected_node"],
-  components: {
-    TreeNode: () => frappe.ui.components.TreeNode
-  },
   computed: {
     icon() {
       let icons = {
@@ -47,12 +49,37 @@ export default {
       if (this.node.open) return icons.open;
       return icons.closed;
     }
+  },
+  methods: {
+    handleNodeClick() {
+      this.$emit('node-click', this.node);
+    }
   }
 };
 </script>
-<style scoped>
-  .btn-load-more {
-    margin-left: 1.6rem;
-    margin-top: 0.5rem;
-  }
+
+<style>
+.btn-load-more {
+  margin-left: 1.6rem;
+  margin-top: 0.5rem;
+}
+.tree-link {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 3px;
+  cursor: pointer;
+}
+.tree-link.active {
+  background-color: var(--gray-200);
+}
+.tree-children {
+  margin-left: 9px;
+  padding-left: 0;
+}
+.tree-node-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 </style>

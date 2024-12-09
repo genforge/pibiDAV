@@ -6,7 +6,8 @@ import frappe
 from frappe import _, msgprint, throw, enqueue
 from frappe.utils import cint, cstr
 
-import json, time, requests, sys, hashlib, re
+import json, time, requests, sys, hashlib, re, os
+
 from datetime import date, datetime, timedelta
 
 import pibidav.pibidav.nextcloud as nextcloud
@@ -675,3 +676,29 @@ def get_folder_path_from_link(fileid):
         # Log the error with a full traceback for debugging
         frappe.log_error(message=f"Error retrieving folder path for fileid {fileid}: {e}", title="NextCloud Path Retrieval Error")
         return f"Error retrieving folder path: {e}"
+
+@frappe.whitelist()
+def create_nc_subfolder(parent_folder, folder_name):
+    try:
+        session = make_nc_session()
+        if session == "Failed":
+            return frappe.throw(_("Error in NC Login"))
+
+        # Ensure parent folder starts with /
+        if not parent_folder.startswith('/'):
+            parent_folder = '/' + parent_folder
+            
+        # Create full path
+        new_folder_path = f"{parent_folder}/{folder_name}"
+        if new_folder_path.startswith('//'):
+            new_folder_path = new_folder_path[1:]
+
+        # Create folder using NextCloud client
+        session.mkdir(new_folder_path)
+        session.logout()
+        
+        return new_folder_path
+        
+    except Exception as e:
+        frappe.log_error(message=f"Error creating NextCloud subfolder: {str(e)}", title="NextCloud Folder Creation Error")
+        return frappe.throw(_("Failed to create folder in NextCloud: {0}").format(str(e)))
