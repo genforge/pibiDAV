@@ -3,28 +3,19 @@
     <div class="border-b border-gray-200 px-3 py-2 flex justify-between items-center">
       <div class="text-sm text-gray-600">{{ selected_node.value || '/' }}</div>
       <div class="flex gap-2">
-        <button v-if="selected_node && !selected_node.is_leaf" 
-                class="btn btn-sm btn-primary mr-1" 
-                @click="showCreateFolderDialog"
-                title="Crea Carpeta | Create Folder">
+        <button v-if="selected_node && !selected_node.is_leaf" class="btn btn-sm btn-primary mr-1"
+          @click="showCreateFolderDialog" title="Crea Carpeta | Create Folder">
           <span v-html="folderPlusIcon"></span>
         </button>
-        <button v-if="selected_node && selected_node.value"
-                class="btn btn-sm btn-primary ml-1" 
-                @click="openInNextCloud"
-                title="Abrir en NextCloud | Open in NextCloud">
+        <button v-if="selected_node && selected_node.value" class="btn btn-sm btn-primary ml-1" @click="openInNextCloud"
+          title="Abrir en NextCloud | Open in NextCloud">
           <span v-html="externalLinkIcon"></span>
         </button>
       </div>
     </div>
     <div class="nc-browser-list">
-      <TreeNode
-        class="tree with-skeleton"
-        :node="node"
-        :selected_node="selected_node"
-        @node-click="n => toggle_node(n)"
-        @load-more="n => load_more(n)"
-      />
+      <TreeNode class="tree with-skeleton" :node="node" :selected_node="selected_node" @node-click="n => toggle_node(n)"
+        @load-more="n => load_more(n)" />
     </div>
   </div>
 </template>
@@ -90,7 +81,7 @@ export default {
     },
     async openInNextCloud() {
       if (!this.selected_node?.value) return;
-      
+
       try {
         const nc_url = await frappe.db.get_single_value('NextCloud Settings', 'nc_backup_url');
         if (!nc_url) {
@@ -98,17 +89,15 @@ export default {
           return;
         }
 
-        const baseUrl = nc_url.endsWith('/') ? nc_url : nc_url + '/';
-        let viewUrl;
-
-        if (this.selected_node.is_leaf) {
-          // For files, open directly using the fileId
-          viewUrl = baseUrl + 'apps/files/?fileid=' + this.selected_node.file_url;
-        } else {
-          // For folders, open the directory view
-          viewUrl = baseUrl + 'apps/files/?dir=' + encodeURIComponent(this.selected_node.value);
+        if (!this.selected_node.file_url) {
+          frappe.throw(__('FileId not found for this item'));
+          return;
         }
-        
+
+        const baseUrl = nc_url.endsWith('/') ? nc_url : nc_url + '/';
+        // Use fileId for both files and folders
+        const viewUrl = baseUrl + 'apps/files/?fileid=' + this.selected_node.file_url;
+
         window.open(viewUrl, '_blank');
       } catch (error) {
         frappe.throw(__('Error opening NextCloud: ') + error.message);
@@ -120,35 +109,35 @@ export default {
     },
     async initializeFolder() {
       await this.toggle_node(this.node);
-      
+
       if (this.initial_folder !== this.root_folder) {
         await this.navigateToFolder(this.initial_folder);
       }
     },
     async navigateToFolder(targetPath) {
       if (!targetPath || targetPath === this.root_folder) return;
-      
+
       const pathSegments = targetPath
         .substring(this.root_folder.length)
         .split('/')
         .filter(Boolean);
-      
+
       let currentNode = this.node;
-      
+
       for (const segment of pathSegments) {
         if (!currentNode.open) {
           await this.toggle_node(currentNode);
         }
-        
+
         const nextNode = currentNode.children.find(
           child => child.filename === segment || child.label === segment
         );
-        
+
         if (!nextNode) break;
         currentNode = nextNode;
         await this.toggle_node(currentNode);
       }
-      
+
       this.select_node(currentNode);
     },
     toggle_node(node) {
@@ -279,6 +268,7 @@ export default {
   overflow: hidden;
   margin-top: 6px;
 }
+
 .tree {
   overflow: auto;
   height: 100%;
