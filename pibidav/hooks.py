@@ -30,9 +30,7 @@ app_include_js = "pibidav.bundle.js"
 # include js in page
 # page_js = {"page" : "public/js/file.js"}
 
-app_include_icons = [
-	"pibidav/icons/timeless/icons.svg"
-]
+app_include_icons = ["assets/pibidav/icons/timeless/icons.svg"]
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
@@ -40,26 +38,26 @@ app_include_icons = [
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
-nc_list = [
-  "Contact",
-  "Event",
-  "Customer",
-  "Supplier",
-  "Project",
-  "Sales Invoice",
-  "Sales Order",
-  "Purchase Invoice",
-  "Quotation",
-  "Purchase Order",
-  "Task",
-  "Timesheet",
-  "Item",
-  "Employee"
-]
+# nc_list = [
+#     "Contact",
+#     "Event",
+#     "Customer",
+#     "Supplier",
+#     "Project",
+#     "Sales Invoice",
+#     "Sales Order",
+#     "Purchase Invoice",
+#     "Quotation",
+#     "Purchase Order",
+#     "Task",
+#     "Timesheet",
+#     "Item",
+#     "Employee",
+# ]
 
-doctype_js = {}
-for item in nc_list:
-  doctype_js[item] = "public/js/dist/nc_pibidav.js"
+# doctype_js = {}
+# for item in nc_list:
+#     doctype_js[item] = "public/js/dist/nc_pibidav.js"
 
 # Home Pages
 # ----------
@@ -67,16 +65,16 @@ for item in nc_list:
 # application home page (will override Website Settings)
 # home_page = "login"
 
-#brand_html = '<div><img width="27px" src="/assets/pibidav/image/pibiCo_engine_largo.png"> pibi<strong>DAV</strong></div>'
+# brand_html = '<div><img width="27px" src="/assets/pibidav/image/pibiCo_engine_largo.png"> pibi<strong>DAV</strong></div>'
 
-#website_context = {
+# website_context = {
 #  "favicon": "/assets/pibidav/image/favicon.svg",
 #  "splash_image": "/assets/pibidav/image/pibiCo_engine_largo.png"
-#}
+# }
 
 # website user home page (by Role)
 # role_home_page = {
-#	"Role": "home_page"
+# 	"Role": "home_page"
 # }
 
 # Generators
@@ -115,63 +113,54 @@ for item in nc_list:
 # 	"Event": "frappe.desk.doctype.event.event.has_permission",
 # }
 
-jinja = {
-  "methods": [
-    "pibidav.jinja.timestamp_to_date",
-    "pibidav.jinja.ts_to_date"
-  ]
-}
+jinja = {"methods": ["pibidav.jinja.timestamp_to_date", "pibidav.jinja.ts_to_date"]}
 
 # DocType Class
 # ---------------
 # Override standard doctype classes
 
-override_doctype_class = {
-	"File": "pibidav.pibidav.overrides.file.CustomFile"
-}
+override_doctype_class = {"File": "pibidav.pibidav.overrides.file.CustomFile"}
 
 # Document Events
 # ---------------
 # Hook on document methods and events
 
 doc_events = {
-#  "*": {
-#    "after_insert": "pibidav.pibidav.custom.create_nc_folder"
-#  },
-  "File": {
-    "after_insert": ["pibidav.pibidav.custom.upload_file_to_nc"]
-  }
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-#	}
+    #  "*": {
+    #    "after_insert": "pibidav.pibidav.custom.create_nc_folder"
+    #  },
+    "File": {"after_insert": ["pibidav.pibidav.custom.upload_file_to_nc"]}
+    # 	"*": {
+    # 		"on_update": "method",
+    # 		"on_cancel": "method",
+    # 		"on_trash": "method"
+    # 	}
 }
 
 # Scheduled Tasks
 # ---------------
 
 scheduler_events = {
-# 	"all": [
-# 		"pibidav.tasks.all"
-# 	],
-#  "cron": {
-#    "*/1 * * * *": [
-#      "pibidav.pibidav.pibical.sync_outside_caldav"
-#    ]
-#  },
-  "daily": [
-    "pibidav.pibidav.doctype.nextcloud_settings.nextcloud_settings.daily_backup"
-  ],
-# 	"hourly": [
-# 		"pibidav.tasks.hourly"
-# 	],
-  "weekly": [
-    "pibidav.pibidav.doctype.nextcloud_settings.nextcloud_settings.weekly_backup"
-  ] #,
-# 	"monthly": [
-# 		"pibidav.tasks.monthly"
-# 	]
+    # 	"all": [
+    # 		"pibidav.tasks.all"
+    # 	],
+    #  "cron": {
+    #    "*/1 * * * *": [
+    #      "pibidav.pibidav.pibical.sync_outside_caldav"
+    #    ]
+    #  },
+    "daily": [
+        "pibidav.pibidav.doctype.nextcloud_settings.nextcloud_settings.daily_backup"
+    ],
+    # 	"hourly": [
+    # 		"pibidav.tasks.hourly"
+    # 	],
+    "weekly": [
+        "pibidav.pibidav.doctype.nextcloud_settings.nextcloud_settings.weekly_backup"
+    ],  # ,
+    # 	"monthly": [
+    # 		"pibidav.tasks.monthly"
+    # 	]
 }
 
 # Testing
@@ -202,24 +191,22 @@ scheduler_events = {
 # --------------------
 
 user_data_fields = [
-	{
-		"doctype": "{doctype_1}",
-		"filter_by": "{filter_by}",
-		"redact_fields": ["{field_1}", "{field_2}"],
-		"partial": 1,
-	},
-	{
-		"doctype": "{doctype_2}",
-		"filter_by": "{filter_by}",
-		"partial": 1,
-	},
-	{
-		"doctype": "{doctype_3}",
-		"strict": False,
-	},
-	{
-		"doctype": "{doctype_4}"
-	}
+    {
+        "doctype": "{doctype_1}",
+        "filter_by": "{filter_by}",
+        "redact_fields": ["{field_1}", "{field_2}"],
+        "partial": 1,
+    },
+    {
+        "doctype": "{doctype_2}",
+        "filter_by": "{filter_by}",
+        "partial": 1,
+    },
+    {
+        "doctype": "{doctype_3}",
+        "strict": False,
+    },
+    {"doctype": "{doctype_4}"},
 ]
 
 # Authentication and authorization
@@ -230,21 +217,12 @@ user_data_fields = [
 # ]
 
 fixtures = [
-  {
-    "dt": "Custom Field",
-    "filters": {"module": ["like", "Pibidav"]}
-  },
-  {
-    "dt": "Client Script",
-    "filters": {"module": ["like", "Pibidav"]}
-  },
-  {
-    "dt": "Workspace",
-    "filters": {"module": ["like", "Pibidav"]}
-  }
+    {"dt": "Custom Field", "filters": {"module": ["like", "Pibidav"]}},
+    {"dt": "Client Script", "filters": {"module": ["like", "Pibidav"]}},
+    {"dt": "Workspace", "filters": {"module": ["like", "Pibidav"]}},
 ]
 
-treeviews = ['Folder Set']
+treeviews = ["Folder Set"]
 
 
 # Translation
@@ -254,3 +232,18 @@ treeviews = ['Folder Set']
 # Recommended only for DocTypes which have limited documents with untranslated names
 # For example: Role, Gender, etc.
 # translated_search_doctypes = []
+
+
+# pibidav integration hooks
+nc_list = [
+    "Customer",
+    "Project",
+    "Sales Invoice",
+    "Purchase Invoice",
+    "Supplier",
+    "Event",
+]
+doctype_js = {}
+for item in nc_list:
+    # This injects the Javascript that draws the NextCloud tree
+    doctype_js[item] = "public/js/dist/nc_pibidav.js"
