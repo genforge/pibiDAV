@@ -7,7 +7,7 @@ from frappe import _, msgprint, throw
 
 from frappe.utils.background_jobs import enqueue
 from frappe.utils.backups import new_backup
-from frappe.integrations.offsite_backup_utils import send_email, validate_file_size
+# from frappe.integrations.offsite_backup_utils import send_email, validate_file_size
 
 import pibidav.pibidav.nextcloud as nextcloud
 
@@ -26,12 +26,13 @@ class NextCloudSettings(Document):
   def start_taking_backup(self, retry_count=0, upload_db_backup=True):
     try:
       if self.nc_backup_enable:
-        validate_file_size()
+        # validate_file_size()
         self.backup_to_nextcloud(upload_db_backup)
         if self.error_log:
           raise Exception
         if self.send_email_for_successful_backup:
-          send_email(True, "NextCloud", "NextCloud Settings", "send_notifications_to")
+          pass
+        #   send_email(True, "NextCloud", "NextCloud Settings", "send_notifications_to")
     except JobTimeoutException:
       if retry_count < 2:
         timeout += 1500
@@ -46,7 +47,7 @@ class NextCloudSettings(Document):
       else:
         file_and_error =  [" - ".join(f) for f in zip(self.failed_uploads if self.failed_uploads else '', list(set(self.error_log)))]
         error_message = ("\n".join(file_and_error) + "\n" + frappe.get_traceback())
-      send_email(False, "NextCloud", "NextCloud Settings", "send_notifications_to", error_message)  
+      # send_email(False, "NextCloud", "NextCloud Settings", "send_notifications_to", error_message)  
         
   def backup_to_nextcloud(self, upload_db_backup=True):
     if not frappe.db:
@@ -93,7 +94,9 @@ class NextCloudSettings(Document):
 
   def make_session(self, base_url):
     nc_token = get_decrypted_password('NextCloud Settings', 'NextCloud Settings', 'nc_backup_token', True)
-    session = nextcloud.Client(base_url)
+
+    # bypass ssl certs
+    session = nextcloud.Client(base_url, verify_certs=False)
     session.login(self.nc_backup_username, nc_token)
     self.session = session
   
